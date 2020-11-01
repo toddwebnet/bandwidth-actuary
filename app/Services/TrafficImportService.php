@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Jobs\AddToReportJob;
+use App\Jobs\ProcessFileJob;
 use App\Jobs\TrafficImportJob;
 use App\Models\Traffic;
 use Illuminate\Support\Facades\Log;
@@ -12,11 +13,11 @@ class TrafficImportService
 
     private $files = [
         'log.1.0.cdf',
-//        'log.1.1.cdf',
-//        'log.1.2.cdf',
-//        'log.1.3.cdf',
-//        'log.1.4.cdf',
-//        'log.1.5.cdf',
+        'log.1.1.cdf',
+        'log.1.2.cdf',
+        'log.1.3.cdf',
+        'log.1.4.cdf',
+        'log.1.5.cdf',
     ];
 
     public function importFromPfSense()
@@ -24,13 +25,15 @@ class TrafficImportService
         $importPath = storage_path() . '/imports';
         $this->importFiles($importPath);
         foreach ($this->files as $file) {
-            $this->processFile($importPath . '/' . $file);
+            QueueService::instance()
+                ->sendToQueue(ProcessFileJob::class, [
+                    'filePath' => $importPath . '/' . $file
+                ]);
         }
     }
 
     private function processFile($filePath)
     {
-
         Log::info("Processing File: {$filePath}");
         /** @var QueueService $queueService */
         $queueService = app()->make(QueueService::class);
