@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Services\TrafficImportService;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class ImportCdfs extends Command
 {
@@ -11,6 +12,7 @@ class ImportCdfs extends Command
 
     public function handle()
     {
+        Log::info('import:cdfs');
         app()->make(TrafficImportService::class)
             ->importFromPfSense();
     }
