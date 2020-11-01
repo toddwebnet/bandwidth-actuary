@@ -1,7 +1,6 @@
 ARG PHP_DOCKERFILE_SOURCE=I_WILL_FAIL
 FROM ${PHP_DOCKERFILE_SOURCE}
 
-ENV DEBIAN_FRONTEND noninteractive
 
 # Install "PHP Extentions", "libraries", "Software's"
 RUN apt-get update && \
@@ -20,7 +19,6 @@ RUN apt-get update && \
         libz-dev libmemcached-dev
 
 RUN apt-get install sshpass -y
-
 
 #RUN docker-php-ext-install memcached
 RUN pecl install memcached
@@ -50,20 +48,18 @@ RUN apt-get install default-libmysqlclient-dev -y
 RUN apt-get install default-mysql-client -y
 RUN apt-get install default-libmysqlclient-dev -y
 
+RUN apt-get install -y supervisor
 RUN  apt-get clean
-
 
 
 RUN curl -s http://getcomposer.org/installer | php && \
     echo "export PATH=${PATH}:/var/www/vendor/bin" >> ~/.bashrc && \
     mv composer.phar /usr/local/bin/composer
 
-
-RUN mkdir -p /root/.ssh && touch /root/.ssh/known_hosts
-RUN ssh-keyscan -t rsa pfsense.lan >> ~root/.ssh/known_hosts
-
 # Source the bash
 RUN . ~/.bashrc
 
 
-WORKDIR /var/www
+COPY supervisord.conf /etc/supervisord.conf
+
+ENTRYPOINT ["/usr/bin/supervisord", "-n", "-c",  "/etc/supervisord.conf"]

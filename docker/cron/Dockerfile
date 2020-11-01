@@ -1,8 +1,6 @@
 ARG PHP_DOCKERFILE_SOURCE=I_WILL_FAIL
 FROM ${PHP_DOCKERFILE_SOURCE}
 
-RUN apt-get install cron -y
-
 
 # Install "PHP Extentions", "libraries", "Software's"
 RUN apt-get update && \
@@ -19,6 +17,10 @@ RUN apt-get update && \
         libxml2-dev \
         libpq-dev \
         libz-dev libmemcached-dev
+
+RUN apt-get install cron -y
+
+RUN apt-get install sshpass -y
 
 #RUN docker-php-ext-install memcached
 RUN pecl install memcached
@@ -58,8 +60,11 @@ RUN curl -s http://getcomposer.org/installer | php && \
     echo "export PATH=${PATH}:/var/www/vendor/bin" >> ~/.bashrc && \
     mv composer.phar /usr/local/bin/composer
 
+RUN mkdir -p /root/.ssh && touch /root/.ssh/known_hosts
+RUN ssh-keyscan -t rsa pfsense.lan >> ~root/.ssh/known_hosts
+
 # Source the bash
-COPY ../_devops/crontab/docker /etc/cron.d/docker
+COPY ./crontab/docker /etc/cron.d/docker
 RUN chmod 0644 /etc/cron.d/docker
 RUN crontab /etc/cron.d/docker
 RUN touch /var/log/cron.log

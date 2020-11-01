@@ -35,6 +35,20 @@ services:
     networks:
       - network
 
+  ### supervisor for queuing  ################################
+
+  supervisor:
+    build:
+      context: ${DOCKER_PATH}/supervisor
+      args:
+        - PHP_DOCKERFILE_SOURCE=${PHP_DOCKERFILE_SOURCE}
+    volumes:
+      - ${APP_PATH}:/var/www
+      - ${APP_PATH}/docker/_devops/supervisor:/etc/supervisord.d
+    tty: true
+    networks:
+      - network
+
   ### workspace (for tinkering)  ##########################################
   workspace:
     build:
@@ -95,6 +109,19 @@ services:
       - "${MYSQL_PORT}:3306"
     networks:
       - network
+
+
+  cron:
+    build:
+      context: ${DOCKER_PATH}/cron
+      args:
+        - PHP_DOCKERFILE_SOURCE=${PHP_DOCKERFILE_SOURCE}
+    volumes:
+      - ${APP_PATH}:/var/www
+    tty: true
+    networks:
+      - network
+
 
 networks:
   network:
