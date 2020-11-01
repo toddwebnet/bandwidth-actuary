@@ -32,7 +32,7 @@ class TrafficImportService
         }
     }
 
-    private function processFile($filePath)
+    public function processFile($filePath)
     {
         Log::info("Processing File: {$filePath}");
         /** @var QueueService $queueService */
