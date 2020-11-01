@@ -32,6 +32,7 @@ class Traffic extends Migration
             $table->bigInteger('ftp_rec');
             $table->bigInteger('http_rec');
             $table->bigInteger('p2p_rec');
+            $table->boolean('processed')->default(false);
         });
     }
 

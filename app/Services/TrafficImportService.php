@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Jobs\AddToReportJob;
 use App\Jobs\TrafficImportJob;
 use App\Models\Traffic;
 use Illuminate\Support\Facades\Log;
@@ -11,11 +12,11 @@ class TrafficImportService
 
     private $files = [
         'log.1.0.cdf',
-        'log.1.1.cdf',
-        'log.1.2.cdf',
-        'log.1.3.cdf',
-        'log.1.4.cdf',
-        'log.1.5.cdf',
+//        'log.1.1.cdf',
+//        'log.1.2.cdf',
+//        'log.1.3.cdf',
+//        'log.1.4.cdf',
+//        'log.1.5.cdf',
     ];
 
     public function importFromPfSense()
@@ -39,7 +40,7 @@ class TrafficImportService
             if (strlen($row > 0)) {
                 $queueService->sendToQueue(TrafficImportJob::class, [
                     'row' => $row
-                ]);
+                ], 'import');
             }
 
         }
@@ -92,7 +93,10 @@ class TrafficImportService
             $traffic[$key] = $data[$i];
         }
         if (!Traffic::exists($traffic['ip'], $traffic['timestamp'])) {
-            Traffic::create($traffic);
+            $traffic = Traffic::create($traffic);
+            QueueService::instance()->sendToQueue(AddToReportJob::class, [
+                'id' => $traffic->id
+            ], 'compile');
         }
 
     }

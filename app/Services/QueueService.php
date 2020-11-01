@@ -10,10 +10,11 @@ class QueueService
 
     use DispatchesJobs, Queueable;
 
-    const DEFAULT_QUEUE = 'traffic';
+    const DEFAULT_QUEUE = 'import';
 
     const AVAILABLE_QUEUES = [
-        'traffic',
+        'import',
+        'compile',
     ];
 
     /**
