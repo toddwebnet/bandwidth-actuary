@@ -31,7 +31,8 @@ class SummaryBuilderService
             $dailySummary = DailySummary::create($data);
         }
         $dailySummary->sent = $dailySummary->sent + $traffic->total_sent;
-        $dailySummary->rec = $dailySummary->sent + $traffic->total_rec;
+        $dailySummary->rec = $dailySummary->rec + $traffic->total_rec;
+        $dailySummary->rec = $dailySummary->total + $traffic->total_sent + $traffic->total_rec;
         $dailySummary->save();
 
     }
