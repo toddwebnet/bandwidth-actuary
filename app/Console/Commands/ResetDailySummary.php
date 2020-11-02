@@ -20,6 +20,7 @@ class ResetDailySummary extends Command
         $summaryBuilderService = app()->make(SummaryBuilderService::class);
 
         DB::update('delete from daily_summary');
+        DB::update('update traffic set processed = 0');
         foreach (Traffic::select('id')->get() as $traffic) {
             QueueService::instance()->sendToQueue(AddToReportJob::class, [
                 'id' => $traffic->id
