@@ -18,7 +18,7 @@ class SummaryBuilderService
 
     }
 
-    private function addToDailySummary(Traffic $traffic)
+    public function addToDailySummary(Traffic $traffic)
     {
         $data = [
             'ip' => $traffic->ip,
@@ -32,7 +32,7 @@ class SummaryBuilderService
         }
         $dailySummary->sent = $dailySummary->sent + $traffic->total_sent;
         $dailySummary->rec = $dailySummary->rec + $traffic->total_rec;
-        $dailySummary->rec = $dailySummary->total + $traffic->total_sent + $traffic->total_rec;
+        $dailySummary->total = $dailySummary->total + $traffic->total_sent + $traffic->total_rec;
         $dailySummary->save();
 
     }

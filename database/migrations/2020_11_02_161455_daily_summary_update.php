@@ -15,7 +15,7 @@ class DailySummaryUpdate extends Migration
     {
         Schema::table('daily_summary', function($table)
         {
-            $table->string('total')->after('day');
+            $table->bigInteger('total')->default(0)->after('day');
         });
         \Illuminate\Support\Facades\DB::update('update daily_summary set total = sent + rec');
     }
