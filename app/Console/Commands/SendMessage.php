@@ -12,7 +12,7 @@ class SendMessage extends Command
     public function handle()
     {
         dump(
-            CourierApi::instance()->sendMessage('361-482-6438', 'Test')
+            CourierApi::instance()->sendMessage(env('PHONE_HOME'), 'Eat a Joes')
         );
     }
 }
