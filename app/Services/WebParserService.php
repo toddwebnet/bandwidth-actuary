@@ -12,17 +12,18 @@ class WebParserService
 
         $year = date('Y', time());
         $month = date('m', time());
+        $day = date('d', time());
         $headings = [
             0 => 'ip',
             1 => 'total',
-            2 => 'sent',
-            3 => 'rec',
-            4 => 'ftp',
-            5 => 'http',
-            6 => 'p2p',
-            7 => 'tcp',
-            8 => 'udp',
-            9 => 'icmp',
+//            2 => 'sent',
+//            3 => 'rec',
+//            4 => 'ftp',
+//            5 => 'http',
+//            6 => 'p2p',
+//            7 => 'tcp',
+//            8 => 'udp',
+//            9 => 'icmp',
 
         ];
 
@@ -51,29 +52,51 @@ class WebParserService
                             )
                         )
                     );
-                $key = $headings[count($dataRow)];
-                $dataRow[$key] = $this->recalc($key, $item);
+
+                if(array_key_exists(count($dataRow), $headings)) {
+                    $key = $headings[count($dataRow)];
+
+                    $dataRow[$key] = $this->recalc($key, $item);
+                }
             }
             $data[] = $dataRow;
-
         }
-        $this->importData($year, $month, $data);
+        $this->importData(['year' => $year, 'month' => $month, 'day' => $day], $data);
     }
 
-    private function importData($year, $month, $data)
+    private function importData($filters, $data)
     {
-        $where = ['year' => $year, 'month' => $month];
+        $where = $filters;
+        $yesterday = $this->getPreviousDayIps($filters);
         BandwidthTraffic::where($where)
             ->delete();
         foreach ($data as $junk) {
-
-            BandwidthTraffic::create($where + $junk);
+            if (array_key_exists($junk['ip'], $yesterday)) {
+                $change = $yesterday[$junk['ip']] - $junk['total'];
+            } else {
+                $change = $junk['total'];
+            }
+            BandwidthTraffic::create($where + $junk + ['change' => $change]);
         }
+    }
+
+    private function getPreviousDayIps($filters)
+    {
+        $day = BandwidthTraffic::where(['year' => $filters['year'], 'month' => $filters['month']])
+            ->where('day', '<', $filters['day'])
+            ->max('day');
+        $ips = [];
+        if ($day !== null) {
+            $filters['day'] = $day;
+            foreach (BandwidthTraffic::where($filters)->get() as $traffic) {
+                $ips[$traffic->ip] = $traffic->total;
+            }
+        }
+        return $ips;
     }
 
     private function recalc($key, $item)
     {
-        $org = $item;
         if ($key == 'ip') {
             return $item;
         }
@@ -94,7 +117,7 @@ class WebParserService
                     , 6)
             );
         } else {
-            $value = round($item / 1024 / 1024 / 1024, );
+            $value = round($item / 1024 / 1024 / 1024,);
         }
         return $value;
     }

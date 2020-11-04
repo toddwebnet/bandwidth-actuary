@@ -11,15 +11,9 @@ class BandwidthTraffic extends Model
     protected $fillable = [
         'year',
         'month',
+        'day',
         "ip",
         "total",
-        "sent",
-        "rec",
-        "ftp",
-        "http",
-        "p2p",
-        "tcp",
-        "udp",
-        "icmp"
+        "change",
     ];
 }

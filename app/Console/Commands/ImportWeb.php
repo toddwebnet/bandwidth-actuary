@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\BandwidthTraffic;
 use App\Services\ReportNotificationService;
 use App\Services\WebParserService;
 use Illuminate\Console\Command;
@@ -13,6 +14,6 @@ class ImportWeb extends Command
     public function handle()
     {
         app()->make(WebParserService::class)->importWeb();
-        app()->make(ReportNotificationService::class)->notifyUsage();
+//        app()->make(ReportNotificationService::class)->notifyUsage();
     }
 }

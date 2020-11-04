@@ -16,17 +16,12 @@ class BandwidthTraffic extends Migration
         Schema::create('bandwidth_traffic', function (Blueprint $table) {
             $table->integer('year');
             $table->integer('month');
+            $table->integer('day');
             $table->string('ip');
-            $table->decimal('total', 18,12);
-            $table->decimal('sent', 18,12);
-            $table->decimal('rec', 18,12);
-            $table->decimal('ftp', 18,12);
-            $table->decimal('http', 18,12);
-            $table->decimal('p2p', 18,12);
-            $table->decimal('tcp', 18,12);
-            $table->decimal('udp', 18,12);
-            $table->decimal('icmp', 18,12);
-            $table->primary(['year', 'month', 'ip']);
+            $table->decimal('total', 18, 12);
+            $table->decimal('change', 18, 12)->nullable();
+
+            $table->primary(['year', 'month', 'day', 'ip']);
         });
     }
 
