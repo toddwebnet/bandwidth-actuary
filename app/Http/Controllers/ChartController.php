@@ -2,14 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\ReportingService;
 use Illuminate\Support\Facades\DB;
 
 class ChartController
 {
+    public function index()
+    {
+        /** @var ReportingService $reportingService */
+        $reportingService = app()->make(ReportingService::class);
+        $reportingService->getThisMonthGraph();
+        return view('index', $reportingService->getThisMonthGraph());
+    }
+
     public function chart()
     {
         $data = $this->buildData();
-
 
         return [
             'type' => 'bar',
@@ -63,7 +71,7 @@ class ChartController
         for ($x = 0; $x < 5; $x++) {
             $time = strtotime("today - {$x} months");
             if ($time < $stop) {
-           //     break;
+                //     break;
             }
             $where = $this->buildWheres($time);
             $sql = "
@@ -71,10 +79,10 @@ class ChartController
             where {$where}
             ";
             $bytes = DB::select($sql)[0]->total;
-            $kBytes = $bytes/1024;
-            $mBytes = $kBytes/ 1024;
-            $gBytes = $mBytes/1024;
-            $dates[date('Y-m', $time)] =$gBytes                ;
+            $kBytes = $bytes / 1024;
+            $mBytes = $kBytes / 1024;
+            $gBytes = $mBytes / 1024;
+            $dates[date('Y-m', $time)] = $gBytes;
         }
         return $dates;
 
@@ -86,7 +94,9 @@ class ChartController
         return " year = {$year}  and month = {$month} ";
 
     }
-    function isa_convert_bytes_to_specified($bytes, $to, $decimal_places = 1) {
+
+    function isa_convert_bytes_to_specified($bytes, $to, $decimal_places = 1)
+    {
         $formulas = array(
             'K' => number_format($bytes / 1024, $decimal_places),
             'M' => number_format($bytes / 1048576, $decimal_places),
@@ -94,6 +104,5 @@ class ChartController
         );
         return isset($formulas[$to]) ? $formulas[$to] : 0;
     }
-
 
 }

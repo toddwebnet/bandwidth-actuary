@@ -19,7 +19,7 @@
 </head>
 <body>
 <div class="jumbotron">
-    <h1 class="display-4" >Bandwidth Actuary</h1>
+    <h1 class="display-4">Bandwidth Actuary</h1>
 
 
 </div>
@@ -27,11 +27,27 @@
 
 <div class="container">
     <div class="row">
-        <canvas id="graph1"
-                class="graphs"
-                style="height: 300px; width: 375px"
-        >
-        </canvas>
+        <table class="table table-striped table-bordered">
+            <thead class="thead-dark">
+            <tr>
+                <th style="padding-left: 25px">
+                    {{ number_format($percent,0) }}%
+                </th>
+                @foreach($days as $day)
+                    <th>{{ $year . '-' . str_pad($month, 2, '0', STR_PAD_LEFT) . '-' . str_pad($day, 2, '0', STR_PAD_LEFT) }}</th>
+                @endforeach
+            </tr>
+            </thead>
+            @foreach($data as $row)
+                <tr>
+                    <td><b>{{ $row['hostname'] }}</b></td>
+                    @foreach($days as $day)
+                        <td>{{ number_format($row['days'][$day], 2) }}</td>
+                    @endforeach
+                </tr>
+            @endforeach
+        </table>
+
     </div>
 </div>
 <!-- Optional JavaScript -->

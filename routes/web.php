@@ -13,9 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('index');
-});
+Route::get('/', [\App\Http\Controllers\ChartController::class, 'index']);
 
-Route::get('/chart', [\App\Http\Controllers\ChartController::class,'chart']);
+Route::get('/chart', [\App\Http\Controllers\ChartController::class, 'chart']);
 

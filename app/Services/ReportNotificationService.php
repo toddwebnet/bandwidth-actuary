@@ -18,6 +18,7 @@ class ReportNotificationService
         $where = [
             'year' => $year,
             'month' => $month,
+            'day' => $day,
             'ip' => 'total'
         ];
         $total = 0;
