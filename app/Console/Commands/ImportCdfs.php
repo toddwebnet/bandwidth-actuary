@@ -14,7 +14,7 @@ class ImportCdfs extends Command
     public function handle()
     {
         Log::info('import:cdfs');
-        CourierApi::instance()->sendMessage(env('PHONE_HOME'), 'CDFS Import started');
+//        CourierApi::instance()->sendMessage(env('PHONE_HOME'), 'CDFS Import started');
         app()->make(TrafficImportService::class)
             ->importFromPfSense();
     }

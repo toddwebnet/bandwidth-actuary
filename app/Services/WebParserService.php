@@ -53,7 +53,7 @@ class WebParserService
                         )
                     );
 
-                if(array_key_exists(count($dataRow), $headings)) {
+                if (array_key_exists(count($dataRow), $headings)) {
                     $key = $headings[count($dataRow)];
 
                     $dataRow[$key] = $this->recalc($key, $item);
@@ -72,7 +72,7 @@ class WebParserService
             ->delete();
         foreach ($data as $junk) {
             if (array_key_exists($junk['ip'], $yesterday)) {
-                $change = $yesterday[$junk['ip']] - $junk['total'];
+                $change = $junk['total'] - $yesterday[$junk['ip']];
             } else {
                 $change = $junk['total'];
             }
