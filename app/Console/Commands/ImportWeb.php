@@ -14,6 +14,6 @@ class ImportWeb extends Command
     public function handle()
     {
         app()->make(WebParserService::class)->importWeb();
-//        app()->make(ReportNotificationService::class)->notifyUsage();
+        app()->make(ReportNotificationService::class)->notifyUsage();
     }
 }
