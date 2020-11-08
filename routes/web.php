@@ -17,5 +17,5 @@ Route::get('/', [\App\Http\Controllers\ChartController::class, 'index']);
 
 Route::get('/chart', [\App\Http\Controllers\ChartController::class, 'chart']);
 Route::get('/check', function(){
-   \Illuminate\Support\Facades\Artisan::call('import:web')
+   \Illuminate\Support\Facades\Artisan::call('import:web');
 });
